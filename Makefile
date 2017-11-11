@@ -10,6 +10,12 @@ compile:
 	@echo "$(OK_COLOR)==> Compiling binary$(NO_COLOR)"
 	@go build -o bin/${PROJECT_NAME}
 
+debug:
+	@dlv debug . -- -n dpa98ysuhdjtt -q 'alias grace'
+
+dev-run:
+	./bin/${PROJECT_NAME} -n dpa98ysuhdjtt -q 'alias grace'
+
 compile-all:
 	@gox -verbose \
 	-ldflags "-X main.version=${VERSION}" \
@@ -31,6 +37,8 @@ clean:
 lint:
 	@golint *.go
 	@golint cli/
+	@golint logger/
+	@golint session/
 	@golint version/
 
 format:
@@ -41,6 +49,8 @@ sloc:
 
 test: lint
 	@go test -v -race cli/*.go
+	@go test -v -race logger/*.go
+	@go test -v -race session/*.go
 	@go test -v -race version/*.go
 
 install:

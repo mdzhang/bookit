@@ -16,6 +16,7 @@ A CLI tool for grabbing books off IRC
 - golint - `go get -u github.com/golang/lint/golint`
 - gox - `go get -u github.com/mitchellh/gox`
 - glide - go dependency manager
+- delve - `go get -u github.com/derekparker/delve/cmd/dlv`
 
 ### Setup
 

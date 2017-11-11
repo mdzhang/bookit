@@ -2,3 +2,7 @@ package: github.com/mdzhang/bookit
 import:
 - package: gopkg.in/alecthomas/kingpin.v2
 - package: github.com/fatih/color
+- package: github.com/fluffle/goirc/client
+- package: github.com/op/go-logging
+- package: github.com/looplab/fsm
+- package: github.com/nbio/st
