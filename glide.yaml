@@ -1,0 +1,4 @@
+package: github.com/mdzhang/bookit
+import:
+- package: gopkg.in/alecthomas/kingpin.v2
+- package: github.com/fatih/color
