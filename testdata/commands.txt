@@ -1,6 +1,11 @@
-01:46 SearchOok Notice: <<SearchBot>> Your search for "alias grace" has been accepted. Searching...
-01:46 SearchOok Notice: <<SearchBot>> Your search for "alias grace" returned 8 matches. Sending results to you as SearchOok_results_for_ alias grace.txt.zip. Search took 0.67 seconds.
-01:46 SearchOok Notice: DCC Send SearchOok_results_for_ alias grace.txt.zip CRC(22ED7E77) (unseen.edu)
-01:46 DCC SEND request received from SearchOok. SearchOok_results_for__alias_grace.txt.zip : 715 bytes
-01:48 dpa98ysuhdj !pondering42 Margaret Atwood - Alias Grace (v5.0) (epub).rar  ::INFO:: 2.6MB
-01:48 pondering42 Notice:  Request Accepted ? File: Margaret Atwood - Alias Grace (v5.0) (epub).rar ? Queue Position: 187 ? Allowed: 1 of 32 ? Min CPS: 50 ? OmenServe v2.72 ?
+10:02 dpa98ysuhdj @search oathbringer
+10:02 SearchOok Notice: <<SearchBot>> Your search for "oathbringer" has been accepted. Searching...
+10:02 SearchOok Notice: <<SearchBot>> Sorry, your search for "oathbringer" returned no matches. Search took 0.59 seconds.
+
+10:02 SearchOok Notice: <<SearchBot>> Your search for "alias grace" has been accepted. Searching...
+10:02 SearchOok Notice: <<SearchBot>> Your search for "alias grace" returned 8 matches. Sending results to you as SearchOok_results_for_ alias grace.txt.zip. Search took 0.67 seconds.
+10:02 DCC SEND request received from SearchOok. SearchOok_results_for__alias_grace.txt.zip : 715 bytes
+
+10:06 dpa98ysuhdj !pondering42 Atwood, Margaret - Alias Grace (v1.0) [html].rar  ::INFO:: 348.6KB
+10:06 pondering42 Notice:  Request Accepted ? File: Atwood, Margaret - Alias Grace (v1.0) [html].rar ? Queue Position: 103 ? Allowed: 1 of 32 ? Min CPS: 50 ? OmenServe v2.72 ?
+10:18 DCC SEND request received from pondering42. Atwood, Margaret - Alias Grace (v1.0) [html].rar : 356968 bytes

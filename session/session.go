@@ -4,6 +4,7 @@ import (
 	"fmt"
 	irc "github.com/fluffle/goirc/client"
 	"github.com/mdzhang/bookit/logger"
+	"os"
 	"regexp"
 )
 
@@ -98,7 +99,7 @@ func (sess *Session) h_processLine(conn *irc.Conn, line *irc.Line) {
 	switch nick := line.Nick; nick {
 	case "SearchOok":
 		logLine(line)
-		sess.processSearchLine(line)
+		sess.processSearchLine(line.Text())
 	case "ChanServ", sess.nick:
 		logLine(line)
 	default:
@@ -106,23 +107,63 @@ func (sess *Session) h_processLine(conn *irc.Conn, line *irc.Line) {
 	}
 }
 
-// stripFormatting removes IRC text formatting that looks like e.g. '12,9'
+// stripFormatting removes IRC text color formatting
 //	see https://en.wikichip.org/wiki/irc/colors
 func stripFormatting(text string) string {
-	r := regexp.MustCompile("\\d{1,2}(,\\d{1,2})?")
-
+	r := regexp.MustCompile("\x03\\d{0,2}(,\\d{0,2})?(\x02\x02)?")
 	return r.ReplaceAllLiteralString(text, "")
 }
 
-func (sess *Session) processSearchLine(line *irc.Line) {
-	text := stripFormatting(line.Text())
+// TODO: refactor candidate
+func (sess *Session) processSearchLine(line string) {
+	text := stripFormatting(line)
 
-	// <<SearchBot>> Your search for "alias grace" has been accepted. Searching...
+	searchAccepted := fmt.Sprintf("<<SearchBot>> Your search for \"%s\" has been accepted. Searching...", sess.search.query)
+	searchAcceptedRegex := regexp.MustCompile(searchAccepted)
 
-	// <<SearchBot>> Your search for "alias grace" returned 8 matches. Sending results to you as SearchOok_results_for_ alias grace.txt.zip. Search took 0.67 seconds.
-	// DCC Send SearchOok_results_for_ alias grace.txt.zip CRC(838E30AB) (unseen.edu)
+	foundResults := fmt.Sprintf("<<SearchBot>> Your search for \"%s\" returned 8 matches. Sending results to you as SearchOok_results_for_ %s.txt.zip. Search took \\d+\\.\\d+ seconds.", sess.search.query, sess.search.query)
+	foundResultsRegex := regexp.MustCompile(foundResults)
 
-	// 01:48 pondering42 Notice:  Request Accepted ? File: Margaret Atwood - Alias Grace (v5.0) (epub).rar ? Queue Position: 187 ? Allowed: 1 of 32 ? Min CPS: 50 ? OmenServe v2.72 ?
+	noResults := fmt.Sprintf("Sorry, your search for \"%s\" returned no matches.*", sess.search.query)
+	noResultsRegex := regexp.MustCompile(noResults)
+
+	resultsFileName := fmt.Sprintf("SearchOok_results_for_ %s.txt.zip", sess.search.query)
+	dccSent := fmt.Sprintf("DCC Send %s .*", resultsFileName)
+	dccSentRegex := regexp.MustCompile(dccSent)
+
+	fileRequestAccepted := fmt.Sprintf(".*Request Accepted ? File: %s", sess.search.requestedFile)
+	fileRequestAcceptedRegex := regexp.MustCompile(fileRequestAccepted)
+
+	fileReceived := fmt.Sprintf("DCC Send %s .*", sess.search.requestedFile)
+	fileReceivedRegex := regexp.MustCompile(fileReceived)
+
+	if searchAcceptedRegex.MatchString(text) {
+		logger.Info("Search accepted")
+		sess.search.accept()
+	} else if foundResultsRegex.MatchString(text) {
+		logger.Info("Found results")
+		sess.search.foundResults()
+	} else if dccSentRegex.MatchString(text) {
+		logger.Info("Search results received")
+		sess.search.dccSent()
+		// TODO: download the DCC file (resultsFileName) to disk
+		//			 read and choose file source
+		//			 enqueue request to download file and update search state
+	} else if noResultsRegex.MatchString(text) {
+		logger.Info("No results")
+		sess.search.noResults()
+		// TODO: prob best to propagate an error here and caller can decide
+		//			 what to do with it
+		os.Exit(1)
+	} else if fileRequestAcceptedRegex.MatchString(text) {
+		logger.Info("File request accepted")
+		sess.search.fileRequestAccepted()
+	} else if fileReceivedRegex.MatchString(text) {
+		logger.Info("File received")
+		// TODO: download the DCC file to disk
+		// TODO: prob best to report done some other way
+		os.Exit(1)
+	}
 
 	logger.Info("Processed text: %s", text)
 }
